@@ -80,7 +80,6 @@
 // }
 
 
-
 "use client";
 
 import {
@@ -94,6 +93,16 @@ import {
 } from "recharts";
 import { useEffect, useState } from "react";
 
+// Define the Transaction type
+interface Transaction {
+  id: number;
+  date: string;
+  type: "Deposit" | "Withdraw";
+  category: string;
+  amount: number;
+  status: "Completed" | "Pending" | "Failed";
+}
+
 const savingsData = [
   { month: "Jan", amount: 500 },
   { month: "Feb", amount: 700 },
@@ -106,20 +115,17 @@ const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#A28BFE"];
 
 export default function HomePage() {
   const [investmentPieData, setInvestmentPieData] = useState([]);
-  const [transactionHistory, setTransactionHistory] = useState([]);
+  const [transactionHistory, setTransactionHistory] = useState<Transaction[]>([]);
 
   useEffect(() => {
     // Load investments from localStorage
     const storedInvestments = localStorage.getItem("investments");
     if (storedInvestments) {
       const parsedInvestments = JSON.parse(storedInvestments);
-
-      // Convert investments to Pie Chart Data
-      const formattedData = parsedInvestments.map((inv) => ({
+      const formattedData = parsedInvestments.map((inv: any) => ({
         name: inv.category,
         value: inv.amount,
       }));
-
       setInvestmentPieData(formattedData);
     }
 
@@ -130,6 +136,19 @@ export default function HomePage() {
     }
   }, []);
 
+  const addTransaction = () => {
+    const newTransaction: Transaction = {
+      id: Date.now(),
+      date: new Date().toISOString(),
+      type: "Deposit",
+      category: "Salary",
+      amount: 5000,
+      status: "Completed", // ✅ Ensuring it matches the expected type
+    };
+
+    setTransactionHistory((prevHistory) => [newTransaction, ...prevHistory]);
+  };
+
   const openModal = (type: string) => {
     alert(`${type} modal should open here`);
   };
@@ -139,40 +158,24 @@ export default function HomePage() {
       <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Savings Overview Chart */}
         <div className="bg-white p-4 rounded-xl shadow-md">
           <h2 className="text-lg font-semibold mb-2">Savings Overview</h2>
           <ResponsiveContainer width="100%" height={200}>
             <LineChart data={savingsData}>
-              <Line
-                type="monotone"
-                dataKey="amount"
-                stroke="#0088FE"
-                strokeWidth={2}
-              />
+              <Line type="monotone" dataKey="amount" stroke="#0088FE" strokeWidth={2} />
               <Tooltip />
             </LineChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Investment Summary Chart */}
         <div className="bg-white p-4 rounded-xl shadow-md">
           <h2 className="text-lg font-semibold mb-2">Investment Summary</h2>
           {investmentPieData.length > 0 ? (
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
-                <Pie
-                  data={investmentPieData}
-                  dataKey="value"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={60}
-                >
+                <Pie data={investmentPieData} dataKey="value" cx="50%" cy="50%" outerRadius={60}>
                   {investmentPieData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -184,42 +187,26 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Quick Actions (Deposit/Withdraw) */}
       <div className="bg-white p-6 rounded-xl shadow-md flex flex-col gap-4 mt-6">
-        <button
-          onClick={() => openModal("Deposit")}
-          className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
-        >
+        <button onClick={() => openModal("Deposit")} className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
           Deposit Funds
         </button>
-        <button
-          onClick={() => openModal("Withdraw")}
-          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-        >
+        <button onClick={() => openModal("Withdraw")} className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
           Withdraw Funds
         </button>
       </div>
 
-      {/* Transaction History */}
       <div className="bg-white p-6 rounded-xl shadow-md mt-6">
         <h2 className="text-lg font-semibold mb-2">Transaction History</h2>
         <ul>
           {transactionHistory.length > 0 ? (
             transactionHistory.map((transaction) => (
-              <li
-                key={transaction.id}
-                className="flex justify-between p-2 border-b last:border-0"
-              >
+              <li key={transaction.id} className="flex justify-between p-2 border-b last:border-0">
                 <span>
                   {transaction.date} - {transaction.type} - {transaction.category}
                 </span>
-                <span
-                  className={
-                    transaction.type === "Deposit" ? "text-green-500" : "text-red-500"
-                  }
-                >
-                  {transaction.type === "Deposit" ? "+" : "-"}$
-                  {transaction.amount.toLocaleString()}
+                <span className={transaction.type === "Deposit" ? "text-green-500" : "text-red-500"}>
+                  {transaction.type === "Deposit" ? "+" : "-"}${transaction.amount.toLocaleString()}
                 </span>
               </li>
             ))
