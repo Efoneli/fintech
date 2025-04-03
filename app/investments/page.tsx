@@ -26,6 +26,7 @@ const recentInvestments = [
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#A28BE2"];
 
 export default function InvestmentsPage() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [investmentData, setInvestmentData] = useState<InvestmentData[]>(dummyInvestmentData);
 
   return (

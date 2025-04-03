@@ -3,8 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FaHome, FaWallet, FaChartLine, FaList, FaCog, FaBell, FaUser } from "react-icons/fa";
-import { useUser } from "@auth0/nextjs-auth0/client";
-import Image from "next/image";
+import { JSX } from "react";
 
 interface MenuItem {
   id: string;

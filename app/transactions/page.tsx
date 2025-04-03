@@ -93,6 +93,7 @@ const dummyTransactions: Transaction[] = [
 ];
 
 export default function TransactionsPage() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [transactions, setTransactions] = useState<Transaction[]>(dummyTransactions);
   const [filter, setFilter] = useState<string>("All");
 

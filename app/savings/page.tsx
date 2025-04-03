@@ -66,6 +66,7 @@ const dummySavingsData: SavingsData[] = [
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#A28BE2"];
 
 export default function SavingsPage() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [savingsData, setSavingsData] = useState<SavingsData[]>(dummySavingsData);
 
   return (
