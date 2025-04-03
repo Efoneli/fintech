@@ -247,7 +247,7 @@ interface Transaction {
   date: string;
   type: "Deposit" | "Withdraw";
   amount: number;
-  status: "Completed";
+  status: "Completed" | "Pending" | "Failed";
   category: string;
 }
 
@@ -322,9 +322,9 @@ export default function InvestmentsPage() {
       return updatedInvestments;
     });
   
-    const newTransaction = {
+    const newTransaction: Transaction = {
       id: Date.now(),
-      date: new Date().toISOString().split("T")[0], // YYYY-MM-DD format
+      date: new Date().toISOString().split("T")[0],
       type: transactionType,
       category,
       amount: transactionType === "Deposit" ? amount : -amount,

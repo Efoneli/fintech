@@ -80,6 +80,8 @@
 // }
 
 
+
+
 "use client";
 
 import {
@@ -93,7 +95,6 @@ import {
 } from "recharts";
 import { useEffect, useState } from "react";
 
-// Define the Transaction type
 interface Transaction {
   id: number;
   date: string;
@@ -101,6 +102,11 @@ interface Transaction {
   category: string;
   amount: number;
   status: "Completed" | "Pending" | "Failed";
+}
+
+interface Investment {
+  category: string;
+  amount: number;
 }
 
 const savingsData = [
@@ -122,7 +128,7 @@ export default function HomePage() {
     const storedInvestments = localStorage.getItem("investments");
     if (storedInvestments) {
       const parsedInvestments = JSON.parse(storedInvestments);
-      const formattedData = parsedInvestments.map((inv: any) => ({
+      const formattedData = parsedInvestments.map((inv: Investment) => ({
         name: inv.category,
         value: inv.amount,
       }));
@@ -136,6 +142,7 @@ export default function HomePage() {
     }
   }, []);
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const addTransaction = () => {
     const newTransaction: Transaction = {
       id: Date.now(),
