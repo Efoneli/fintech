@@ -71,25 +71,25 @@
 // }
 
 
-
 "use client";
 
 import { useState } from "react";
+import { LineChart, Line, Tooltip, ResponsiveContainer, XAxis, YAxis, CartesianGrid } from "recharts";
 
 interface Transaction {
   id: number;
   date: string;
   type: string;
-  amount: string;
+  amount: number; // Ensure it's a number
   status: "Completed" | "Pending" | "Failed";
 }
 
 const dummyTransactions: Transaction[] = [
-  { id: 1, date: "2024-08-10", type: "Deposit", amount: "+ $2,000", status: "Completed" },
-  { id: 2, date: "2024-08-09", type: "Withdrawal", amount: "- $500", status: "Pending" },
-  { id: 3, date: "2024-08-08", type: "Investment", amount: "- $1,500", status: "Completed" },
-  { id: 4, date: "2024-08-07", type: "Deposit", amount: "+ $3,000", status: "Completed" },
-  { id: 5, date: "2024-08-06", type: "Withdrawal", amount: "- $1,000", status: "Failed" },
+  { id: 1, date: "2024-08-10", type: "Deposit", amount: 2000, status: "Completed" },
+  { id: 2, date: "2024-08-09", type: "Withdrawal", amount: -500, status: "Pending" },
+  { id: 3, date: "2024-08-08", type: "Investment", amount: -1500, status: "Completed" },
+  { id: 4, date: "2024-08-07", type: "Deposit", amount: 3000, status: "Completed" },
+  { id: 5, date: "2024-08-06", type: "Withdrawal", amount: -1000, status: "Failed" },
 ];
 
 export default function TransactionsPage() {
@@ -103,6 +103,20 @@ export default function TransactionsPage() {
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-2xl font-bold mb-4">Transactions</h1>
+
+      {/* Line Chart for Transaction Trends */}
+      <div className="bg-white p-6 rounded-xl shadow-md mb-6">
+        <h2 className="text-lg font-semibold mb-2">Transaction Trends</h2>
+        <ResponsiveContainer width="100%" height={200}>
+          <LineChart data={dummyTransactions}>
+            <XAxis dataKey="date" />
+            <YAxis />
+            <CartesianGrid strokeDasharray="3 3" />
+            <Tooltip />
+            <Line type="monotone" dataKey="amount" stroke="#0088FE" strokeWidth={2} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
 
       {/* Filter Dropdown */}
       <div className="mb-4">
@@ -140,10 +154,13 @@ export default function TransactionsPage() {
                   <td className="py-2 px-4">{transaction.type}</td>
                   <td
                     className={`py-2 px-4 font-bold ${
-                      transaction.amount.startsWith("+") ? "text-green-500" : "text-red-500"
+                      transaction.amount > 0 ? "text-green-500" : "text-red-500"
                     }`}
                   >
-                    {transaction.amount}
+                    {new Intl.NumberFormat("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                    }).format(transaction.amount)}
                   </td>
                   <td className="py-2 px-4">
                     <span
