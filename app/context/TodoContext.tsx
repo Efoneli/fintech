@@ -1,6 +1,5 @@
 
 import {createContext, useContext, useState, ReactNode} from 'react';
-import { useEffect } from 'react';
 
 
 type Todo = { id: number; text: string; completed: boolean}
