@@ -248,7 +248,7 @@
 // let userId: ID = 42
 // userId: ID = 'abekd'
 
-
+'use client'
 import { useState } from "react";
 
 const Counter: React.FC = () => {
